@@ -17,7 +17,11 @@ RUN export deps="git wget ca-certificates" \
  && wget -q -O - https://storage.googleapis.com/golang/go$GOVER.linux-armv6l.tar.gz | tar zxf - \
  && mkdir -p $YNITDIR \
  && git clone -b $YNITVER https://github.com/Ronmi/ynit $YNITDIR \
- && (cd $YNITDIR && $GOROOT/bin/go get && $GOROOT/bin/go build && cp $YNITDIR/ynit /usr/local/bin/) \
+ && echo "We need some hack for https://github.com/golang/go/issues/14643" \
+ && go get -d golang.org/x/sys/... \
+ && (echo "";echo 'func TimevalToNsec(tv Timeval) int64 { return int64(tv.Sec)*1e9 + int64(tv.Usec)*1e3 }') \
+     >> "$GOPATH/src/golang.org/x/sys/unix/syscall_linux_arm.go" \
+ && (cd $YNITDIR && go get && go build && cp $YNITDIR/ynit /usr/local/bin/) \
  && dpkg -l | awk '{print $2}' > /dpkg.new \
  && diff -u0 dpkg.orig dpkg.new | grep '^\+[a-z0-9]'|sed 's/+//' | xargs apt-get purge -y --purge \
  && apt-get autoremove --purge -y \
