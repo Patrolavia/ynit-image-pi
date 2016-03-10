@@ -1,4 +1,4 @@
-FROM debian-pi:%tag%
+FROM patrolavia/debian-pi:%tag%
 MAINTAINER Ronmi Ren <ronmi@patrolavia.com>
 
 ENV YNITVER v0.1
