@@ -8,6 +8,8 @@ RUN export deps="git wget ca-certificates" \
  && export GOPATH="/gopath" \
  && export GOROOT="/go" \
  && export YNITDIR="$GOPATH/src/github.com/Ronmi/ynit" \
+ && export PATH="$PATH:$GOROOT/bin" \
+ && set -x \
  && dpkg -l | awk '{print $2}' > /dpkg.orig \
  && apt-get update \
  && apt-get install -y --no-install-recommends $deps \
